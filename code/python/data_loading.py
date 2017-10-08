@@ -1,0 +1,104 @@
+"""Provide data loading and preparation functions."""
+import urllib.request
+import zipfile
+import lzma
+import os
+
+import pandas as pd
+import numpy as np
+
+from data_utilities import pandas_utilities as pu
+
+import constants
+
+# pylama: ignore=D103
+
+
+def download_data(zipurl, zippath):
+    """Download data and places it in the tmp folder."""
+    with urllib.request.urlopen(zipurl) as urlf:
+        with open(zippath, 'wb') as zipf:
+            zipf.write(urlf.read())
+
+
+def join_csvs_from_zip(zippath, lzma_outpath):
+    """Join csvs from zip file into a single compressed file."""
+    zipf = zipfile.ZipFile(zippath)
+    csv_list = list(map(
+        zipf.read, zipf.namelist()))
+    # Parse header for one dataframe.
+    csv_header = csv_list[0][:csv_list[0].find(b'\n')]
+    # Combine dataframes, prepending one header and stripping all other
+    # headers.
+    with lzma.open(lzma_outpath, 'wb') as f:
+        f.write(
+            csv_header +
+            b'\n'.join(x[x.find(b'\n'):] for x in csv_list))
+
+
+def save_data(dataframe, output_path, basename=None):
+    """Save dataframe in the output path.
+
+    The basename is important because it discriminates saved objects. It is
+    recommended to be the input path.
+    """
+    basename = str(basename).replace(os.sep, '_').lower()
+    dataframe.to_hdf(
+        os.path.join(output_path, basename + '.hdf'),
+        key='x',
+        mode='w')
+
+
+def load_data(path):
+    # Load csv.
+    df = pd.read_csv(path, parse_dates=True)
+    # Reset wrong index.
+    df.reset_index(inplace=True)
+    df.drop('index', axis=1, inplace=True)
+    # Correct data dtypes.
+    _correct_data_dtypes(df)
+    # Correct column names.
+    pu.rename_columns_to_lower(df)
+    # Sort by datetimes.
+    df = df.sort_values('date')
+    # Insert missing values.
+    df.loc[:, df.columns.drop('occupancy')] = (
+        _insert_missing_values(df.loc[:, df.columns.drop('occupancy')]))
+    return df
+
+
+def _correct_data_dtypes(dataframe):
+    dataframe.date = pd.to_datetime(dataframe.date, format='%Y-%m-%d %H:%M:%S')
+
+
+def _insert_missing_values(dataframe, fraction=0.03):
+    mask = np.random.choice([True, False],
+                            size=dataframe.shape,
+                            p=(fraction, 1 - fraction))
+    return dataframe.mask(mask, np.nan)
+
+
+def train_test_split(dataframe, split_out_of_time=True, train_size=0.6):
+    return (None, None, None, None)
+
+
+def main():
+    # Setup its own constants.
+    DATA_URL = 'http://archive.ics.uci.edu/ml/machine-learning-databases/00357/occupancy_data.zip'  # noqa
+    ZIP_PATH = os.path.join(constants.TMP_PATH, 'zip_data.zip')
+
+    # Download data from website.
+    download_data(DATA_URL, ZIP_PATH)
+
+    # Join data into a single csv.
+    join_csvs_from_zip(ZIP_PATH, constants.DATA_PATH)
+
+    # Load data (for checking purposes).
+    df = load_data(constants.DATA_PATH)
+
+    # Save data (for checking purposes).
+    save_data(df, constants.TMP_PATH, constants.DATA_PATH)
+
+
+if __name__ == '__main__':
+    main()
