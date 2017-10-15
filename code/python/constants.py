@@ -1,4 +1,4 @@
-"""Assign project-wide variables2
+"""Assign project-wide variables.
 
 Must contain assertions for all the assigned variables (such as paths).
 
@@ -13,7 +13,8 @@ def flush_project_results(*paths):
         flush_files = set(filter(
             os.path.isfile,
             sum(map(lambda x: (
-                glob.glob(x + os.sep + '**' + os.sep + '*') + glob.glob(x + os.sep + '*')),
+                glob.glob(x + os.sep + '**' + os.sep + '*', recursive=True)
+                + glob.glob(x + os.sep + '*', recursive=True)),
                     paths),
                 [])))
         for del_file in flush_files:
@@ -38,12 +39,21 @@ assert os.path.exists(ROOT_PATH)
 DATA_PATH = os.path.join(ROOT_PATH, 'data', 'data.csv.xz')
 TMP_PATH = os.path.join(ROOT_PATH, 'tmp')
 OUTPUT_PATH = os.path.join(ROOT_PATH, 'output')
+OUTPUT_DATA_PROC_PATH = os.path.join(OUTPUT_PATH, 'processed_data')
 PERSITENT_GRID_PATH = os.path.join(OUTPUT_PATH,
                                    'persistent_grid_object.pickle')
 assert os.path.exists(DATA_PATH)
 assert os.path.exists(TMP_PATH)
 assert os.path.exists(OUTPUT_PATH)
 
+# Plotting paths.
+DATA_EXPLORATION = os.path.join(OUTPUT_PATH, 'data_exploration')
+DE_HIST_DF = os.path.join(DATA_EXPLORATION, 'histogram_of_dataframe')
+DE_VIOLIN = os.path.join(DATA_EXPLORATION, 'violinplots')
+
+
+# TODO: how to combine models, data sets, grid for models and grid for data
+# processing.
 # There are two approaches for models and data processing.
 # First approach: zipping
 #   (model,
@@ -51,16 +61,26 @@ assert os.path.exists(OUTPUT_PATH)
 #   best_grid)
 # Second approach: zipping (model, map(data_processing_function, dataset)).
 # Sequence of model objects to be iterated.
+#
+# On the data set processing
+#
+# The data set processing is tricky because of the following:
+#   - Depending on how you iterate over models/data processing the data proc.
+#   part may be only calculated once.
+#   - Each combination of model + data proc. requires its own persistent grid
+#   object. This may point in the direction of saving the processed data sets.
+#   This may be an unacceptable performance impact just to accommodate a
+#   feature of persistent grid (which is linked to the data set path).
+
 MODELS = [
     # XGBoost.
     # Random Forest.
     # Decision Tree.
     ]
-# TODO: how to combine models, data sets, grid for models and grid for data
-# processing.
 
-# Data processing functions
-DATA_PROCESSING_PIPELINE = [
+# Data processing functions.
+# In practice there will not be a large amount of (models) x (data processing).
+DATA_PROCESSING_PIPELINES = [
     # XGBoost.
     [
         # Normalization + PCA(2).
@@ -77,23 +97,6 @@ DATA_PROCESSING_PIPELINE = [
 # These pipelines get combined into a single transformer using sklearn's
 # FeatureUnion.
 
-DATA_PROCESSING_PIPELINE_KWARGS = [
-    # XGBoost.
-    [
-        # Normalization + PCA(2).
-        [{}, {}, ],
-        # Normalization + PCA(3).
-        [{}, {}, ],
-        # Feature selection + PCA.
-        [{}, {}, ],
-    ],
-    # Random Forest. (may not contain nulls)
-    [
-        # Remove nulls + PCA + Normalization.
-        # Remove nulls + PCA.
-    ],
-    # Decision Tree.
-    ]
 
 GRIDS = [
     # XGBoost.
@@ -103,3 +106,6 @@ GRIDS = [
     # Decision Tree.
     {},
     ]
+
+# Y column.
+Y_COLUMN = 'occupancy'

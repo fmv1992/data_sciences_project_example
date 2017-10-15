@@ -3,6 +3,7 @@ import urllib.request
 import zipfile
 import lzma
 import os
+import datetime as dt
 
 import pandas as pd
 import numpy as np
@@ -64,6 +65,8 @@ def load_data(path):
     # Insert missing values.
     df.loc[:, df.columns.drop('occupancy')] = (
         _insert_missing_values(df.loc[:, df.columns.drop('occupancy')]))
+    # Convert days to ordinal numbers.
+    df = _convert_days_to_ordinal(df)
     return df
 
 
@@ -78,8 +81,35 @@ def _insert_missing_values(dataframe, fraction=0.03):
     return dataframe.mask(mask, np.nan)
 
 
+def _convert_days_to_ordinal(dataframe):
+    dataframe['date'] = dataframe.date.map(
+        lambda x: dt.datetime.date(x).toordinal())
+    return dataframe
+
+
+def get_x_columns(dataframe):
+    x_columns = dataframe.columns.tolist()
+    x_columns.remove(constants.Y_COLUMN)
+    return x_columns
+
+
 def train_test_split(dataframe, split_out_of_time=True, train_size=0.6):
-    return (None, None, None, None)
+    if split_out_of_time:
+        all_days = sorted(dataframe.date.unique())
+        N_TRAINING_DAYS = 3
+        X_COLUMNS = get_x_columns(dataframe)
+        train_set, test_set = (all_days[:-N_TRAINING_DAYS],
+                               all_days[-N_TRAINING_DAYS:])
+        return (
+            dataframe.loc[dataframe.date.isin(train_set), X_COLUMNS],  # xtrain
+            dataframe.loc[dataframe.date.isin(test_set), X_COLUMNS],   # xtest
+            dataframe.loc[dataframe.date.isin(train_set),
+                          constants.Y_COLUMN],   # ytrain
+            dataframe.loc[dataframe.date.isin(test_set),
+                          constants.Y_COLUMN],   # ytest
+        )
+    else:
+        raise NotImplementedError
 
 
 def main():

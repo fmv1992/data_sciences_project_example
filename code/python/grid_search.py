@@ -4,12 +4,14 @@
 
 from data_utilities import sklearn_utilities as sku
 
+import constants
+
 
 def main(dataframe,
          models,
          grids,
-         data_tranformation_pipeline,
-         persistent_grid_object):
+         pgo,
+         ):
     # Combine data transformation with FeatureUnion.
     feature_unions = []  # TODO
     # TODO: adapt feature_unions or data transformation to conform to
@@ -25,5 +27,7 @@ def main(dataframe,
             sku.grid_search()
 
 
-def get_best_grids(models, data_processing_pipelines, persistent_grid_object):
+def get_best_grids(models,
+                   # data_processing_pipelines,
+                   persistent_grid_object):
     pass
