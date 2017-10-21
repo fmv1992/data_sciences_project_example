@@ -12,6 +12,7 @@ import data_loading
 import data_processing
 import data_exploration
 import grid_search
+import models
 
 # pylama: ignore=D103
 
@@ -41,6 +42,7 @@ def main():
 
     # Load and combine data processing pipelines.
     data_processing.main(dataframe, nan_strategy='drop')
+    # Rationale: prepare data to be fed into the models.
 
     # Data split.
     x_train, x_test, y_train, y_test = data_loading.train_test_split(dataframe)
@@ -59,10 +61,10 @@ def main():
                      persistent_grid_object,
                      # data_processing_pipelines,
                      )
-
-    best_grids = grid_search.get_best_grids(  # noqa
+    best_grids = grid_search.get_best_grids(
+        dataframe,
         constants.MODELS,
-        # data_processing_pipelines,
+        constants.GRIDS,
         persistent_grid_object
         )
     # Rationale: perform grid search as part of machine learning best
@@ -76,6 +78,9 @@ def main():
     # 5) Grid search of best model hyper parameters.
     # To conclude our project we need the grand finale: model selection and
     # evaluation/comparison.
+    models.main(dataframe, constants.MODELS, best_grids)
+    # Rationale: train models and output theirs results to empower the modeller
+    # to choose the best of them.
 
 
 if __name__ == '__main__':

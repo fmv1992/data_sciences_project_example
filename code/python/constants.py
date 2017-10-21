@@ -6,6 +6,11 @@ Must contain assertions for all the assigned variables (such as paths).
 import os
 import glob
 
+from xgboost import XGBClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
+
+
 # pylama: ignore=D103
 
 
@@ -40,11 +45,14 @@ DATA_PATH = os.path.join(ROOT_PATH, 'data', 'data.csv.xz')
 TMP_PATH = os.path.join(ROOT_PATH, 'tmp')
 OUTPUT_PATH = os.path.join(ROOT_PATH, 'output')
 OUTPUT_DATA_PROC_PATH = os.path.join(OUTPUT_PATH, 'processed_data')
+OUTPUT_MODEL_PATH = os.path.join(OUTPUT_PATH, 'models')
 PERSITENT_GRID_PATH = os.path.join(OUTPUT_PATH,
                                    'persistent_grid_object.pickle')
 assert os.path.exists(DATA_PATH)
 assert os.path.exists(TMP_PATH)
 assert os.path.exists(OUTPUT_PATH)
+assert os.path.exists(OUTPUT_DATA_PROC_PATH)
+assert os.path.exists(OUTPUT_MODEL_PATH)
 
 # Plotting paths.
 DATA_EXPLORATION = os.path.join(OUTPUT_PATH, 'data_exploration')
@@ -73,9 +81,12 @@ DE_VIOLIN = os.path.join(DATA_EXPLORATION, 'violinplots')
 #   feature of persistent grid (which is linked to the data set path).
 
 MODELS = [
-    # XGBoost.
-    # Random Forest.
-    # Decision Tree.
+    # # XGBoost.
+    # XGBClassifier(),
+    # # Random Forest.
+    # RandomForestClassifier(),
+    # # Decision Tree.
+    DecisionTreeClassifier()
     ]
 
 # Data processing functions.
@@ -99,13 +110,33 @@ DATA_PROCESSING_PIPELINES = [
 
 
 GRIDS = [
-    # XGBoost.
-    {},
-    # Random Forest. (may not contain nulls)
-    {},
-    # Decision Tree.
-    {},
-    ]
+    # # XGBoost.
+    # {
+    #     'colsample_bytree': [1],
+    #     'gamma': [0.0,  10.001],  # had problems with [10]
+    #     'learning_rate': [0.3],
+    #     'max_depth': [2, 5, ],
+    #     'n_estimators': [3, ],
+    #     'nthread': [1],
+    #     'n_jobs': [1],
+    #     'silent': [1],
+    #     'subsample': [1],
+    # },
+    # # Random Forest. (may not contain nulls)
+    # {
+    #     'n_estimators': [2, 4],
+    #     'max_depth': [2, 4, ],
+    #     'min_samples_leaf': [.2],
+    #     'n_jobs': [-1],
+    #     'oob_score': [True],
+    #     'bootstrap': [True],
+    # },
+    # # Decision Tree.
+    {
+        'max_depth': [2, 4],
+        'min_samples_leaf': [0.01, 0.1]
+    },
+]
 
 # Y column.
 Y_COLUMN = 'occupancy'

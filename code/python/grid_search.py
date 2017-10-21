@@ -5,6 +5,7 @@
 from data_utilities import sklearn_utilities as sku
 
 import constants
+import data_loading
 
 
 def main(dataframe,
@@ -12,22 +13,26 @@ def main(dataframe,
          grids,
          pgo,
          ):
-    # Combine data transformation with FeatureUnion.
-    feature_unions = []  # TODO
-    # TODO: adapt feature_unions or data transformation to conform to
-    # persistence of the sku.PersistentGrid object.
-
-    # Zip models and feature unions:
-    # (model, (fu1, fu2)).
-
     # Iterate over combination of model and feature union.
-    for model in models:
-        for fu in feature_unions:
-            # TODO: transform data according to feature union.
-            sku.grid_search()
+    get_best_grids(dataframe, models, grids, pgo,)
 
 
-def get_best_grids(models,
-                   # data_processing_pipelines,
-                   persistent_grid_object):
-    pass
+def get_best_grids(dataframe,
+         models,
+         grids,
+         pgo,
+         ):
+    # Iterate over combination of model and feature union.
+    best_grids = list()
+    for model, grid in zip(models, grids):
+        computed_grids = sku.persistent_grid_search_cv(
+            pgo,
+            grid,
+            model,
+            dataframe[data_loading.get_x_columns(dataframe)],
+            y=dataframe[constants.Y_COLUMN],
+            cv=10,
+            scoring='roc_auc')
+        one_best_grid = computed_grids[0]
+        best_grids.append(one_best_grid)
+    return best_grids

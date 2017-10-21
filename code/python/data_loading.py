@@ -63,8 +63,9 @@ def load_data(path):
     # Sort by datetimes.
     df = df.sort_values('date')
     # Insert missing values.
-    df.loc[:, df.columns.drop('occupancy')] = (
-        _insert_missing_values(df.loc[:, df.columns.drop('occupancy')]))
+    # TODO: uncomment this.
+    # df.loc[:, df.columns.drop('occupancy')] = (
+    #     _insert_missing_values(df.loc[:, df.columns.drop('occupancy')]))
     # Convert days to ordinal numbers.
     df = _convert_days_to_ordinal(df)
     return df
@@ -130,5 +131,3 @@ def main():
     save_data(df, constants.TMP_PATH, constants.DATA_PATH)
 
 
-if __name__ == '__main__':
-    main()
