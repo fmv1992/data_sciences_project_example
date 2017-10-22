@@ -37,22 +37,37 @@ def join_csvs_from_zip(zippath, lzma_outpath):
             b'\n'.join(x[x.find(b'\n'):] for x in csv_list))
 
 
-def save_data(dataframe, output_path, basename=None):
+def save_data(dataframe, output_path, dataframe_path):
     """Save dataframe in the output path.
 
     The basename is important because it discriminates saved objects. It is
     recommended to be the input path.
     """
-    basename = str(basename).replace(os.sep, '_').lower()
-    dataframe.to_hdf(
-        os.path.join(output_path, basename + '.hdf'),
-        key='x',
-        mode='w')
+    dest_path = _transform_to_unique_path(output_path, dataframe_path)
+    if not os.path.exists(dest_path):
+        dataframe.to_hdf(
+            dest_path,
+            key='x',
+            mode='w')
 
 
-def load_data(path):
+def _transform_to_unique_path(dest_path, df_path):
+    basename = str(df_path).replace(os.sep, '_').replace('.', '_').lower()
+    full_path = os.path.join(dest_path, basename + '.hdf')
+    return full_path
+
+
+def load_data(dataframe_path, quick_load_path=None):
+    if quick_load_path is not None:
+        quick_load_data_path = _transform_to_unique_path(dataframe_path,
+                                                      quick_load_path)
+        if os.path.exists(quick_load_data_path):
+            df = pd.read_hdf(quick_load_data_path)
+            return df
     # Load csv.
-    df = pd.read_csv(path, parse_dates=True)
+    df = pd.read_csv(dataframe_path, parse_dates=True)
+    # TODO: remove this.
+    df = df.sample(1000)
     # Reset wrong index.
     df.reset_index(inplace=True)
     df.drop('index', axis=1, inplace=True)
@@ -63,9 +78,8 @@ def load_data(path):
     # Sort by datetimes.
     df = df.sort_values('date')
     # Insert missing values.
-    # TODO: uncomment this.
-    # df.loc[:, df.columns.drop('occupancy')] = (
-    #     _insert_missing_values(df.loc[:, df.columns.drop('occupancy')]))
+    df.loc[:, df.columns.drop('occupancy')] = (
+        _insert_missing_values(df.loc[:, df.columns.drop('occupancy')]))
     # Convert days to ordinal numbers.
     df = _convert_days_to_ordinal(df)
     return df
@@ -86,6 +100,10 @@ def _convert_days_to_ordinal(dataframe):
     dataframe['date'] = dataframe.date.map(
         lambda x: dt.datetime.date(x).toordinal())
     return dataframe
+
+def dataframe_already_exists(dest_path, df_path):
+    df_path = _transform_to_unique_path(dest_path, df_path)
+    return os.path.exists(df_path)
 
 
 def get_x_columns(dataframe):
@@ -122,12 +140,12 @@ def main():
     download_data(DATA_URL, ZIP_PATH)
 
     # Join data into a single csv.
-    join_csvs_from_zip(ZIP_PATH, constants.DATA_PATH)
+    join_csvs_from_zip(ZIP_PATH, constants.DATASET_PATH)
 
     # Load data (for checking purposes).
-    df = load_data(constants.DATA_PATH)
+    df = load_data(constants.DATASET_PATH)
 
     # Save data (for checking purposes).
-    save_data(df, constants.TMP_PATH, constants.DATA_PATH)
+    save_data(df, constants.TMP_PATH, constants.DATASET_PATH)
 
 

@@ -10,6 +10,8 @@ from xgboost import XGBClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 
+# Imported at the end of the file.
+# import data_processing
 
 # pylama: ignore=D103
 
@@ -41,7 +43,8 @@ def get_root_dir_based_on_dotgit(path):
 ROOT_PATH = get_root_dir_based_on_dotgit(__file__)
 assert os.path.exists(ROOT_PATH)
 
-DATA_PATH = os.path.join(ROOT_PATH, 'data', 'data.csv.xz')
+DATA_PATH = os.path.join(ROOT_PATH, 'data')
+DATASET_PATH = os.path.join(DATA_PATH, 'data.csv.xz')
 TMP_PATH = os.path.join(ROOT_PATH, 'tmp')
 OUTPUT_PATH = os.path.join(ROOT_PATH, 'output')
 OUTPUT_DATA_PROC_PATH = os.path.join(OUTPUT_PATH, 'processed_data')
@@ -82,56 +85,52 @@ DE_VIOLIN = os.path.join(DATA_EXPLORATION, 'violinplots')
 
 MODELS = [
     # # XGBoost.
-    # XGBClassifier(),
+    XGBClassifier(),
     # # Random Forest.
-    # RandomForestClassifier(),
+    RandomForestClassifier(),
     # # Decision Tree.
     DecisionTreeClassifier()
     ]
 
 # Data processing functions.
 # In practice there will not be a large amount of (models) x (data processing).
-DATA_PROCESSING_PIPELINES = [
+DATA_PIPELINE = [
     # XGBoost.
     [
-        # Normalization + PCA(2).
-        # Normalization + PCA(3).
-        # Feature selection + PCA.
+        # DATA_PATH,
+        # data_processing,
     ],
     # Random Forest. (may not contain nulls)
     [
-        # Remove nulls + PCA + Normalization.
-        # Remove nulls + PCA.
     ],
-    # Decision Tree.
     ]
 # These pipelines get combined into a single transformer using sklearn's
 # FeatureUnion.
 
 
 GRIDS = [
-    # # XGBoost.
-    # {
-    #     'colsample_bytree': [1],
-    #     'gamma': [0.0,  10.001],  # had problems with [10]
-    #     'learning_rate': [0.3],
-    #     'max_depth': [2, 5, ],
-    #     'n_estimators': [3, ],
-    #     'nthread': [1],
-    #     'n_jobs': [1],
-    #     'silent': [1],
-    #     'subsample': [1],
-    # },
-    # # Random Forest. (may not contain nulls)
-    # {
-    #     'n_estimators': [2, 4],
-    #     'max_depth': [2, 4, ],
-    #     'min_samples_leaf': [.2],
-    #     'n_jobs': [-1],
-    #     'oob_score': [True],
-    #     'bootstrap': [True],
-    # },
-    # # Decision Tree.
+    # XGBoost.
+    {
+        'colsample_bytree': [1],
+        'gamma': [0.0,  1, 10.001],  # had problems with [10]
+        'learning_rate': [0.3],
+        'max_depth': [2, 5, ],
+        'n_estimators': [10, 20, ],
+        'nthread': [1],
+        'n_jobs': [1],
+        'silent': [1],
+        'subsample': [1],
+    },
+    # Random Forest. (may not contain nulls)
+    {
+        'n_estimators': [2, 4],
+        'max_depth': [2, 4, ],
+        'min_samples_leaf': [.2],
+        'n_jobs': [-1],
+        'oob_score': [True],
+        'bootstrap': [True],
+    },
+    # Decision Tree.
     {
         'max_depth': [2, 4],
         'min_samples_leaf': [0.01, 0.1]
@@ -140,3 +139,5 @@ GRIDS = [
 
 # Y column.
 Y_COLUMN = 'occupancy'
+
+import data_processing

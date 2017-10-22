@@ -15,6 +15,7 @@ from data_utilities import sklearn_utilities as sku
 def report_models_results(xtrain, xtest, ytrain, ytest, model):
     predicted_proba_true = model.predict_proba(xtest)[:, 1]
     # TODO: add more analyses to assess best classifier.
+    print(30 * '-', sku.get_estimator_name(model))
     print('ROC AUC:', roc_auc_score(ytest, predicted_proba_true))
 
 
