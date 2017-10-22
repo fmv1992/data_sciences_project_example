@@ -59,8 +59,8 @@ def _transform_to_unique_path(dest_path, df_path):
 
 def load_data(dataframe_path, quick_load_path=None):
     if quick_load_path is not None:
-        quick_load_data_path = _transform_to_unique_path(dataframe_path,
-                                                      quick_load_path)
+        quick_load_data_path = _transform_to_unique_path(quick_load_path,
+                                                         dataframe_path)
         if os.path.exists(quick_load_data_path):
             df = pd.read_hdf(quick_load_data_path)
             return df

@@ -34,7 +34,7 @@ def main():
     # Rationale: ensure reproducibility of the results.
 
     # Flush previous runs.
-    # constants.flush_project_results(constants.TMP_PATH, constants.OUTPUT_PATH)
+    constants.flush_project_results(constants.TMP_PATH, constants.OUTPUT_PATH)
     # Rationale: provide a clear state for the project to run and enforces
     # reproducibility of the results.
 
@@ -60,28 +60,18 @@ def main():
     # Rationale: conduct exploratory data analyses.
 
     # Data split.
-    x_train, x_test, y_train, y_test = data_loading.train_test_split(dataframe)
-    # Rationale: decide on splits after the exploratory analyses since the
-    # latter may help decide on the former.
+    # Removed.
+    # Rationale: module 'models' should execute this.
 
     # Perform grid search.
     # Iteration over processed data sets may occur here since they are model
     # dependent.
-    persistent_grid_object = sku.grid_search.PersistentGrid.load_from_path(
-        persistent_grid_path=constants.PERSITENT_GRID_PATH,
-        dataset_path=constants.DATASET_PATH)
-    grid_search.main(dataframe,
-                     constants.MODELS,
-                     constants.GRIDS,
-                     persistent_grid_object,
-                     # data_processing_pipelines,
-                     )
-    best_grids = grid_search.get_best_grids(
-        dataframe,
-        constants.MODELS,
-        constants.GRIDS,
-        persistent_grid_object
-        )
+    grid_search.main(constants.MODELS, constants.GRIDS)
+    best_combination_of_datasets_and_grids = (
+        grid_search.dict_of_best_datasets_and_grids(constants.MODELS,
+                                                    constants.GRIDS))
+    best_datasets = best_combination_of_datasets_and_grids['best_datasets']
+    best_grids = best_combination_of_datasets_and_grids['best_grids']
     # Rationale: perform grid search as part of machine learning best
     # practices.
 
@@ -93,7 +83,7 @@ def main():
     # 5) Grid search of best model hyper parameters.
     # To conclude our project we need the grand finale: model selection and
     # evaluation/comparison.
-    models.main(dataframe, constants.MODELS, best_grids)
+    models.main(constants.MODELS, best_datasets, best_grids)
     # Rationale: train models and output theirs results to empower the modeller
     # to choose the best of them.
 

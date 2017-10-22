@@ -92,22 +92,6 @@ MODELS = [
     DecisionTreeClassifier()
     ]
 
-# Data processing functions.
-# In practice there will not be a large amount of (models) x (data processing).
-DATA_PIPELINE = [
-    # XGBoost.
-    [
-        # DATA_PATH,
-        # data_processing,
-    ],
-    # Random Forest. (may not contain nulls)
-    [
-    ],
-    ]
-# These pipelines get combined into a single transformer using sklearn's
-# FeatureUnion.
-
-
 GRIDS = [
     # XGBoost.
     {
