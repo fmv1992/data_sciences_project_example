@@ -6,7 +6,6 @@ Those analysis should be defined elsewhere.
 import warnings
 
 import data_utilities as du
-from data_utilities import sklearn_utilities as sku
 
 import constants
 import data_loading

@@ -146,5 +146,3 @@ def main():
 
     # Save data (for checking purposes).
     save_data(df, constants.TMP_PATH, constants.DATASET_PATH)
-
-
