@@ -63,26 +63,6 @@ DE_HIST_DF = os.path.join(DATA_EXPLORATION, 'histogram_of_dataframe')
 DE_VIOLIN = os.path.join(DATA_EXPLORATION, 'violinplots')
 
 
-# TODO: how to combine models, data sets, grid for models and grid for data
-# processing.
-# There are two approaches for models and data processing.
-# First approach: zipping
-#   (model,
-#   map(data_processing_function, dataset),
-#   best_grid)
-# Second approach: zipping (model, map(data_processing_function, dataset)).
-# Sequence of model objects to be iterated.
-#
-# On the data set processing
-#
-# The data set processing is tricky because of the following:
-#   - Depending on how you iterate over models/data processing the data proc.
-#   part may be only calculated once.
-#   - Each combination of model + data proc. requires its own persistent grid
-#   object. This may point in the direction of saving the processed data sets.
-#   This may be an unacceptable performance impact just to accommodate a
-#   feature of persistent grid (which is linked to the data set path).
-
 MODELS = [
     # # XGBoost.
     XGBClassifier(),
@@ -118,6 +98,18 @@ GRIDS = [
     {
         'max_depth': [2, 4],
         'min_samples_leaf': [0.01, 0.1]
+    },
+]
+
+MODEL_FITTING_PARAMETERS = [
+    # XGBoost.
+    {
+    },
+    # Random Forest.
+    {
+    },
+    # Decision Tree.
+    {
     },
 ]
 

@@ -83,7 +83,10 @@ def main():
     # 5) Grid search of best model hyper parameters.
     # To conclude our project we need the grand finale: model selection and
     # evaluation/comparison.
-    models.main(constants.MODELS, best_datasets, best_grids)
+    models.main(constants.MODELS,
+                best_datasets,
+                best_grids,
+                constants.MODEL_FITTING_PARAMETERS)
     # Rationale: train models and output theirs results to empower the modeller
     # to choose the best of them.
 

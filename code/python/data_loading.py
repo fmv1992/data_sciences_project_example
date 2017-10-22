@@ -66,8 +66,6 @@ def load_data(dataframe_path, quick_load_path=None):
             return df
     # Load csv.
     df = pd.read_csv(dataframe_path, parse_dates=True)
-    # TODO: remove this.
-    df = df.sample(1000)
     # Reset wrong index.
     df.reset_index(inplace=True)
     df.drop('index', axis=1, inplace=True)

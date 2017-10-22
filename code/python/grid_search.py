@@ -54,7 +54,6 @@ def get_model_and_df_grid_combinations(models, grids):
     return all_grids_results
 
 
-# TODO: adapt to get just one best grid.
 def get_best_grid(dataframe, model, grid, pgo):
         computed_grids = sku.persistent_grid_search_cv(
             pgo,
