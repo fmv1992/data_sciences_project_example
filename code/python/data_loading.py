@@ -99,6 +99,7 @@ def _convert_days_to_ordinal(dataframe):
         lambda x: dt.datetime.date(x).toordinal())
     return dataframe
 
+
 def dataframe_already_exists(dest_path, df_path):
     df_path = _transform_to_unique_path(dest_path, df_path)
     return os.path.exists(df_path)

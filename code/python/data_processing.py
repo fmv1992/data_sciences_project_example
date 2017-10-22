@@ -18,7 +18,7 @@ import data_loading
 
 # Define constants (paths) to processed dataframes.
 DATA_VANILLA = constants.DATASET_PATH
-PROCESSED_DATA_PATH = os.path.join(constants.OUTPUT_PATH, 'data_processing')
+constants.OUTPUT_DATA_PROC_PATH = os.path.join(constants.OUTPUT_PATH, 'data_processing')
 DATA_PCA2 = os.path.join(constants.DATA_PATH, 'pca2.csv.xz')
 DATA_PCA3 = os.path.join(constants.DATA_PATH, 'pca3.csv.xz')
 DATA_TSNE2 = os.path.join(constants.DATA_PATH, 'tsne2.csv.xz')
@@ -69,7 +69,7 @@ def _tsne(x, *tsne_args, **tsne_kwargs):
 
 
 def norm_pca2(x, y):
-    if data_loading.dataframe_already_exists(PROCESSED_DATA_PATH, DATA_PCA2):
+    if data_loading.dataframe_already_exists(constants.OUTPUT_DATA_PROC_PATH, DATA_PCA2):
         return None
     y = y.reset_index(drop=True)
     norm_df = _normalize(x)
@@ -77,11 +77,11 @@ def norm_pca2(x, y):
     joined_df = pd.concat((norm_df, pca_df, y),
                           axis=1)
     assert norm_df.shape[0] == pca_df.shape[0] == joined_df.shape[0]
-    data_loading.save_data(joined_df, PROCESSED_DATA_PATH, DATA_PCA2)
+    data_loading.save_data(joined_df, constants.OUTPUT_DATA_PROC_PATH, DATA_PCA2)
 
 
 def norm_pca3(x, y):
-    if data_loading.dataframe_already_exists(PROCESSED_DATA_PATH, DATA_PCA3):
+    if data_loading.dataframe_already_exists(constants.OUTPUT_DATA_PROC_PATH, DATA_PCA3):
         return None
     y = y.reset_index(drop=True)
     norm_df = _normalize(x)
@@ -89,11 +89,11 @@ def norm_pca3(x, y):
     joined_df = pd.concat((norm_df, pca_df, y),
                           axis=1)
     assert norm_df.shape[0] == pca_df.shape[0] == joined_df.shape[0]
-    data_loading.save_data(joined_df, PROCESSED_DATA_PATH, DATA_PCA3)
+    data_loading.save_data(joined_df, constants.OUTPUT_DATA_PROC_PATH, DATA_PCA3)
 
 
 def norm_tsne2(x, y):
-    if data_loading.dataframe_already_exists(PROCESSED_DATA_PATH, DATA_TSNE2):
+    if data_loading.dataframe_already_exists(constants.OUTPUT_DATA_PROC_PATH, DATA_TSNE2):
         return None
     y = y.reset_index(drop=True)
     norm_df = _normalize(x)
@@ -101,11 +101,11 @@ def norm_tsne2(x, y):
     joined_df = pd.concat((norm_df, tsne_df, y),
                           axis=1)
     assert norm_df.shape[0] == tsne_df.shape[0] == joined_df.shape[0]
-    data_loading.save_data(joined_df, PROCESSED_DATA_PATH, DATA_TSNE2)
+    data_loading.save_data(joined_df, constants.OUTPUT_DATA_PROC_PATH, DATA_TSNE2)
 
 
 def norm_tsne3(x, y):
-    if data_loading.dataframe_already_exists(PROCESSED_DATA_PATH, DATA_TSNE3):
+    if data_loading.dataframe_already_exists(constants.OUTPUT_DATA_PROC_PATH, DATA_TSNE3):
         return None
     y = y.reset_index(drop=True)
     norm_df = _normalize(x)
@@ -113,14 +113,14 @@ def norm_tsne3(x, y):
     joined_df = pd.concat((norm_df, tsne_df, y),
                           axis=1)
     assert norm_df.shape[0] == tsne_df.shape[0] == joined_df.shape[0]
-    data_loading.save_data(joined_df, PROCESSED_DATA_PATH, DATA_TSNE3)
+    data_loading.save_data(joined_df, constants.OUTPUT_DATA_PROC_PATH, DATA_TSNE3)
 
 
 def no_transform(dataframe):
-    if data_loading.dataframe_already_exists(PROCESSED_DATA_PATH,
+    if data_loading.dataframe_already_exists(constants.OUTPUT_DATA_PROC_PATH,
                                              DATA_VANILLA):
         return None
-    data_loading.save_data(dataframe, PROCESSED_DATA_PATH, DATA_VANILLA)
+    data_loading.save_data(dataframe, constants.OUTPUT_DATA_PROC_PATH, DATA_VANILLA)
 
 
 def main(dataframe, nan_strategy='drop'):

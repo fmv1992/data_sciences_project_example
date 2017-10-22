@@ -1,10 +1,7 @@
-# Illustration of `Data sciences project organization`
+# Illustration of concepts in a data sciences project organization
 
 This project is an illustration of:  
-<TODO>.
+[data_sciences_project_template](https://github.com/fmv1992/data_sciences_project_template).
 
-## TODO:
-
-* Activate insertion of nans in the loaded dataframe.
-* Settle on the discussion of the layout of data processing and adapt the whole
-  project to it
+Therefore this project does not stand on its contents should be analyzed in
+light of the aforementioned project.

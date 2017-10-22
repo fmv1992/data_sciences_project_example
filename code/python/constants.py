@@ -1,17 +1,15 @@
-"""Assign project-wide variables.
+"""Assign project-wide variables and functions.
 
-Must contain assertions for all the assigned variables (such as paths).
+Must contain assertions for all assigned variables that are paths.
 
 """
-import os
-import glob
 
-from xgboost import XGBClassifier
+import glob
+import os
+
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
-
-# Imported at the end of the file.
-# import data_processing
+from xgboost import XGBClassifier
 
 # pylama: ignore=D103
 
@@ -40,9 +38,12 @@ def get_root_dir_based_on_dotgit(path):
     return os.path.abspath(_this_folder)
 
 
+# Set projects constants.
+Y_COLUMN = 'occupancy'
+
+# Set data paths constants for the entire project.
 ROOT_PATH = get_root_dir_based_on_dotgit(__file__)
 assert os.path.exists(ROOT_PATH)
-
 DATA_PATH = os.path.join(ROOT_PATH, 'data')
 DATASET_PATH = os.path.join(DATA_PATH, 'data.csv.xz')
 TMP_PATH = os.path.join(ROOT_PATH, 'tmp')
@@ -59,10 +60,12 @@ assert os.path.exists(OUTPUT_MODEL_PATH)
 
 # Plotting paths.
 DATA_EXPLORATION = os.path.join(OUTPUT_PATH, 'data_exploration')
-DE_HIST_DF = os.path.join(DATA_EXPLORATION, 'histogram_of_dataframe')
 DE_VIOLIN = os.path.join(DATA_EXPLORATION, 'violinplots')
+assert os.path.exists(DATA_EXPLORATION)
+assert os.path.exists(DE_VIOLIN)
 
 
+# Set models to be used in the project.
 MODELS = [
     # # XGBoost.
     XGBClassifier(),
@@ -72,6 +75,7 @@ MODELS = [
     DecisionTreeClassifier()
     ]
 
+# Set grids respective to models defined earlier.
 GRIDS = [
     # XGBoost.
     {
@@ -85,7 +89,7 @@ GRIDS = [
         'silent': [1],
         'subsample': [1],
     },
-    # Random Forest. (may not contain nulls)
+    # Random Forest.
     {
         'n_estimators': [2, 4],
         'max_depth': [2, 4, ],
@@ -99,8 +103,10 @@ GRIDS = [
         'max_depth': [2, 4],
         'min_samples_leaf': [0.01, 0.1]
     },
+
 ]
 
+# Set fitting parameters respective to models defined earlier.
 MODEL_FITTING_PARAMETERS = [
     # XGBoost.
     {
@@ -112,8 +118,3 @@ MODEL_FITTING_PARAMETERS = [
     {
     },
 ]
-
-# Y column.
-Y_COLUMN = 'occupancy'
-
-import data_processing

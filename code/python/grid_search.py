@@ -41,7 +41,7 @@ def get_model_and_df_grid_combinations(models, grids):
     all_grids_results = list()
     # Iterate over data sets.
     for path in data_processing.PROCESSED_DATASETS_PATH:
-        df = data_loading.load_data(path, data_processing.PROCESSED_DATA_PATH)
+        df = data_loading.load_data(path, constants.OUTPUT_DATA_PROC_PATH)
         pgo = sku.grid_search.PersistentGrid.load_from_path(
             persistent_grid_path=constants.PERSITENT_GRID_PATH,
             dataset_path=path)

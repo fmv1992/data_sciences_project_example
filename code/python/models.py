@@ -47,7 +47,7 @@ def main(models, dataset_paths, best_grids, model_fitting_parameters):
         # Load data set.
         dataframe = data_loading.load_data(
             dset_path,
-            data_processing.PROCESSED_DATA_PATH)
+            constants.OUTPUT_DATA_PROC_PATH)
         # Divide into training and test data set.
         x_train, x_test, y_train, y_test = data_loading.train_test_split(
             dataframe)
