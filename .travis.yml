@@ -1,0 +1,18 @@
+language: python
+env:
+    global:
+        - DISPLAY=:0.0
+branches:
+  only:
+    - dev
+python:
+    - "3.4"  # oldest python version supported by numpy
+    - "3.5"
+    - "3.6"
+before_install:
+    - sudo apt-get update
+    - pip3 install --upgrade numpy matplotlib seaborn pandas scikit-learn
+install:
+    - pip3 install -r ./requirements.txt
+script:
+    - python3 ./code/python/main.py

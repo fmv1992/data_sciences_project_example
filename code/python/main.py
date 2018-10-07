@@ -37,8 +37,8 @@ def main():
     # Rationale: provide a clear state for the project to run and enforces
     # reproducibility of the results.
 
-    # Load and save data.
-    # data_loading.main()
+    # Download, load and save data.
+    data_loading.main()
     dataframe = data_loading.load_data(constants.DATASET_PATH,
                                        constants.TMP_PATH)
     data_loading.save_data(dataframe, constants.TMP_PATH,
