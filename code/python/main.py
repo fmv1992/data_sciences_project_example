@@ -33,7 +33,8 @@ def main():
     # Rationale: ensure reproducibility of the results.
 
     # Flush previous runs.
-    constants.flush_project_results(constants.TMP_PATH, constants.OUTPUT_PATH)
+    # constants.flush_project_results(constants.TMP_PATH,
+    #                                 constants.OUTPUT_PATH)
     # Rationale: provide a clear state for the project to run and enforces
     # reproducibility of the results.
 

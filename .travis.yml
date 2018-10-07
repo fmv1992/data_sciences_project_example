@@ -2,6 +2,7 @@ language: python
 env:
     global:
         - DISPLAY=:0.0
+        - MPLBACKEND=AGG
 branches:
   only:
     - dev
@@ -15,4 +16,4 @@ before_install:
 install:
     - pip3 install -r ./requirements.txt
 script:
-    - python3 ./code/python/main.py
+    - travis_wait 90 python3 ./code/python/main.py
