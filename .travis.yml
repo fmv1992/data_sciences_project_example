@@ -2,11 +2,11 @@ language: python
 env:
     global:
         - DISPLAY=:0.0
+        - MPLBACKEND=AGG
 branches:
   only:
     - dev
 python:
-    - "3.4"  # oldest python version supported by numpy
     - "3.5"
     - "3.6"
 before_install:
@@ -15,4 +15,4 @@ before_install:
 install:
     - pip3 install -r ./requirements.txt
 script:
-    - python3 ./code/python/main.py
+    - travis_wait 90 python3 ./code/python/main.py
