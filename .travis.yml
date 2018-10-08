@@ -7,7 +7,6 @@ branches:
   only:
     - dev
 python:
-    - "3.4"  # oldest python version supported by numpy
     - "3.5"
     - "3.6"
 before_install:
